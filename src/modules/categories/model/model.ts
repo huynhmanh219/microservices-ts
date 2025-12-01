@@ -16,5 +16,5 @@ const CategorySchema = z.object({
 
 
 
-export type CategoryStatus = z.infer<typeof CategoryStatusEnum>;
+export type CategoryStatus = z.infer<typeof CategoryStatusEnum>
 export type Category = z.infer<typeof CategorySchema>;

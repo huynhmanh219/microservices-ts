@@ -1,8 +1,10 @@
 // có thể dùng database ORM khác nhau 
 import {DataTypes, Model , Sequelize} from "sequelize";
+import type { CategoryStatus } from "../../model/model.js";
 
 export class CategoryReposistence extends Model{
     declare id:string;
+    declare status:CategoryStatus
 }
 
 export const modelName = "Category";
