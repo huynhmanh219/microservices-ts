@@ -3,10 +3,16 @@ import type { CategoryConDTO, CreateCategoryDTO, UpdateCategoryDTO } from "../mo
 import type { Category } from "../model/model.js";
 
 export interface ICategoryUseCase{
-    CreateANewCategory(data:CreateCategoryDTO):Promise<boolean>
+    CreateANewCategory(data:CreateCategoryDTO):Promise<string>;
+    getDetailCategory(id:string):Promise<Category | null>;
+    UpdateCategory(id:string,data:UpdateCategoryDTO):Promise<boolean>;
+    DeleteCategory(id:string):Promise<boolean>;
+    ListCategory(cond:CategoryConDTO,paging:PagingDTO):Promise<Array<Category>>;
 }
 
-export interface IRepository extends IQueryRepository,ICommandRepository{}
+export interface IRepository extends IQueryRepository,ICommandRepository{
+
+}
 
 export interface IQueryRepository{
     get(id:string):Promise<Category | null>
@@ -14,7 +20,7 @@ export interface IQueryRepository{
 }
 
 export interface ICommandRepository{
-    insert(data:Category):Promise<void>
+    insert(data:Category):Promise<boolean>
     update(id:string,data:UpdateCategoryDTO):Promise<boolean>
-    delete(id:string):Promise<boolean>
+    delete(id:string,isHard:boolean):Promise<boolean>
 }

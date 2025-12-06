@@ -1,20 +1,23 @@
 import { Router } from "express"
-import { getCategoryApi } from "./infras/get-api.js";
-import { updateCategoryApi } from "./infras/update-api.js";
-import { listGetCategoryApi } from "./infras/list-api.js";
-import { createCategoryApi } from "./infras/create-api.js";
-import { deleteCategoryApi } from "./infras/delete-api.js";
-import { init } from "./infras/repository/dto.js";
-import type { Sequelize } from "sequelize";
 
-export const setUpCategoryModule = (sequelize:Sequelize)=>{
+import { init, modelName } from "./infras/repository/dto.js";
+import type { Sequelize } from "sequelize";
+import { CategoryHttpService } from "./infras/transport/http-service.js";
+import { CategoryUseCase } from "./usecase/index.js";
+import { MySQLCategoryRepository } from "./infras/repository/repo.js";
+
+export const SetUpCategoryHTTPModuleHexagon = (sequelize:Sequelize)=>{
     const router = Router();
     init(sequelize);
 
-    router.get("/categories",listGetCategoryApi);
-    router.get("/categories/:id",getCategoryApi);
-    router.post("/categories",createCategoryApi);
-    router.patch("/categories/:id",updateCategoryApi);
-    router.delete("/categories/:id",deleteCategoryApi);
+    const repository = new MySQLCategoryRepository(sequelize,modelName);
+    const useCase = new CategoryUseCase(repository);
+    const httpService = new CategoryHttpService(useCase);
+
+    router.post("/categories",httpService.CreateANewCategoryAPI.bind(httpService));
+    router.get("/categories/:id",httpService.getDetailCategoryAPI.bind(httpService));
+    router.patch("/categories/:id",httpService.updateCategoryAPI.bind(httpService));
+    router.delete("/categories/:id",httpService.deleteCategoryAPI.bind(httpService));
+    router.get("/categories",httpService.listCategoryAPI.bind(httpService));
     return router;
 }
